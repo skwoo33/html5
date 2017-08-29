@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Document</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-mobile/1.4.5/jquery.mobile.css" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mobile/1.4.5/jquery.mobile.js"></script>
+		<script src="https://maps.googleapis.com/maps/api/js"></script>
+		<script type="text/javascript">
+			/*
+			$(document).ready(function() {
+				function showPosition(pos) {
+					alert("위도 : " + pos.coords.latitude + ", 경도 : " + pos.coords.longitude);
+				}
+
+				function errorHandler(error) {
+					alert(error.message);
+				}
+
+				navigator.geolocation.getCurrentPosition(showPosition, errorHandler);
+			});
+			*/
+			$(document).on("pagecreate", "#map-page", function() {
+			//$(document).on("ready", function() {
+				var defaultLatLng = new google.maps.LatLng(35.835920, 128.706965);
+				if(navigator.geolocation) {
+					function success(pos) {
+						drawMap(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+					}
+					function fail(error) {
+						drawMap(defaultLatLng);
+					}
+
+					navigator.geolocation.getCurrentPosition(success, fail, {maximumAge:500000, enableHighAccuracy:true, timeout:6000});
+				} else {
+					drawMap(defaultLatLng);
+				}
+
+				function drawMap(latlng) {
+					var myOptions = {
+						zoom : 18,
+						center : latlng,
+						//mapTypeId : google.maps.MapTypeId.SATELLITE
+					};
+					var map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
+					var marker = new google.maps.Marker({
+						position : latlng,
+						map : map,
+						title : "Hello, World!"
+					});
+				}
+			});
+		</script>
+		<style type="text/css">
+			#map-page, #map-canvas {
+				width : 100%;
+				height : 100%;
+				padding : 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div data-role="page" id="map-page" data-url="map-page">
+			<div data-role="header" data-theme="a">
+				<h1>Maps</h1>
+			</div>
+			<div role="main" class="ui-content" id="map-canvas">
+			</div>
+		</div>
+	</body>
+</html>
