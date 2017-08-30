@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Document</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-mobile/1.4.5/jquery.mobile.css" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mobile/1.4.5/jquery.mobile.js"></script>
+		<script src="https://maps.googleapis.com/maps/api/js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				if(!navigator.geolocation) {
+					alert("브라우저에서 지도 서비스가 지원되지 않습니다.");
+					return;
+				}
+
+				var currLatLng;
+				var map;
+				var marker;
+
+				navigator.geolocation.getCurrentPosition(
+					function(position) {
+						currLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+						map = new google.maps.Map(document.getElementById("map-canvas"), {center:currLatLng, zoom:17});
+					}, 
+					function(error) {
+						alert(error.message);
+						return;
+					},
+					{
+						maximumAge:500000, enableHighAccuracy:true, timeout:6000
+					}
+				);
+
+				$("#current_location").click(function() {
+					map.panTo(currLatLng);
+				});
+
+				$("#put_pin").click(function() {
+					marker = new google.maps.Marker({
+						map : map,
+						position : currLatLng,
+						title : "현재 위치"
+					});
+
+					marker.addListener("click", function() {
+						new google.maps.InfoWindow({content : "영남대학교"}).open(map, this);
+					});
+				});
+			});
+		</script>
+		<style type="text/css">
+			#map-page, #map-content, #map-canvas {
+				width : 100%;
+				height : 100%;
+				padding : 0px;
+			}
+		</style>
+	</head>
+	<body>
+		<div data-role="page" id="map-page">
+			<div data-role="header" data-position="fixed">
+				<h1>Map</h1>
+			</div>
+			<div data-role="content" id="map-content">
+				<div id="map-canvas">
+				</div>
+			</div>
+			<div data-role="footer" data-position="fixed">
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#" data-icon="search" id="current_location">현위치 찾기</a></li>
+						<li><a href="#" data-icon="grid" id="put_pin">핀놓기</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
